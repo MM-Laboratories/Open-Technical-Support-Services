@@ -1,0 +1,3434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIEngie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #0a2463;
+            --secondary: #3e92cc;
+            --accent: #2dc7ff;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            
+            /* 深色模式变量 */
+            --bg-color: #f5f7fa;
+            --text-color: #212529;
+            --card-bg: white;
+            --header-bg: white;
+            --footer-bg: #0a2463;
+            --footer-text: white;
+            --input-bg: white;
+            --border-color: #ddd;
+        }
+        
+        /* 深色模式 */
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --header-bg: #1e1e1e;
+            --footer-bg: #0a0a1a;
+            --footer-text: #e0e0e0;
+            --input-bg: #2d2d2d;
+            --border-color: #444;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: var(--header-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin: 0 15px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 0;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent);
+            transition: var(--transition);
+        }
+        
+        .nav-links a:hover:after,
+        .nav-links a.active:after {
+            width: 100%;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            background: var(--card-bg);
+            color: var(--primary);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+        
+        /* 用户菜单样式 */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            border-radius: 8px;
+            padding: 10px 0;
+            width: 180px;
+            z-index: 1000;
+        }
+        
+        .dropdown.active {
+            display: block;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(45, 199, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        /* 搜索框样式 - 修改为更简洁美观 */
+        .search-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            height: 50px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+            height: 100%;
+        }
+        
+        .search-select {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-left: none;
+            border-right: none;
+            background: var(--input-bg);
+            color: var(--text-color);
+            height: 100%;
+        }
+        
+        .search-btn {
+            padding: 0 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 页面内容区域 */
+        .page {
+            display: none;
+            padding: 30px 0;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 主页样式 */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e4c9a 100%);
+            color: white;
+            padding: 80px 0;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .news-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .news-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            padding: 20px;
+        }
+        
+        .news-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+        
+        .news-content p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .tag-tech {
+            background-color: rgba(45, 199, 255, 0.15);
+            color: var(--accent);
+        }
+        
+        .tag-design {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: var(--warning);
+        }
+        
+        .tag-business {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: var(--success);
+        }
+        
+        /* 评论区域样式 */
+        .comments-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .comment-form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .comment-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 80px;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        .comment-submit {
+            margin-left: 10px;
+            padding: 0 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .comments-list {
+            margin-top: 20px;
+        }
+        
+        .comment {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .comment-author {
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .comment-time {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .comment-content {
+            color: var(--text-color);
+        }
+        
+        /* 动态内容样式 - 修改为Facebook风格 */
+        .dynamic-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+        
+        .trending-list {
+            list-style: none;
+        }
+        
+        .trending-item {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+        
+        .trending-item:last-child {
+            border-bottom: none;
+        }
+        
+        .trending-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-right: 15px;
+            min-width: 30px;
+        }
+        
+        .trending-content h4 {
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+        }
+        
+        .trending-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Facebook风格动态详情 */
+        .post-detail {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .post-user-info {
+            flex: 1;
+        }
+        
+        .post-username {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .post-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .post-content {
+            padding: 15px;
+            line-height: 1.5;
+            color: var(--text-color);
+        }
+        
+        .post-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .post-action {
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .post-action:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .post-action i {
+            margin-right: 5px;
+        }
+        
+        /* 个人中心样式 */
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--card-bg);
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .username-display {
+            font-size: 1.8rem;
+            margin: 10px 0;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .profile-form {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(45, 199, 255, 0.2);
+        }
+        
+        /* 发布动态模块 - 改进样式 */
+        .post-form {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .post-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            resize: vertical;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post-options {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .post-option {
+            color: var(--gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .post-option:hover {
+            color: var(--primary);
+            background-color: rgba(45, 199, 255, 0.1);
+        }
+        
+        .post-option i {
+            margin-right: 5px;
+        }
+        
+        /* 上传预览 */
+        .upload-preview {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .preview-item img, .preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-item .file-icon {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f7ff;
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .preview-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        /* 详情页面样式 */
+        .article-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .article-header {
+            margin-bottom: 25px;
+        }
+        
+        .article-title {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .article-meta {
+            display: flex;
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .article-meta span {
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .article-meta i {
+            margin-right: 5px;
+        }
+        
+        .article-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .article-content {
+            line-height: 1.8;
+        }
+        
+        .article-content p {
+            margin-bottom: 20px;
+        }
+        
+        .article-actions {
+            display: flex;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .action-btn:hover {
+            color: var(--primary);
+        }
+        
+        .action-btn i {
+            margin-right: 5px;
+        }
+        
+        /* 阅读区域样式 */
+        .reading-section {
+            margin: 40px 0;
+        }
+        
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .document-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .document-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .document-icon {
+            background: #f0f7ff;
+            padding: 30px;
+            text-align: center;
+            color: var(--primary);
+            font-size: 3rem;
+        }
+        
+        .document-content {
+            padding: 15px;
+        }
+        
+        .document-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+        
+        .document-meta {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* 视频播放区域样式 - 改进布局 */
+        .video-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin: 40px 0;
+        }
+        
+        .video-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .video-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .video-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .video-platform-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .video-platform-btn {
+            padding: 8px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .video-platform-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .control-btn:hover {
+            background: #051b43;
+        }
+        
+        .control-btn i {
+            margin-right: 5px;
+        }
+        
+        .related-videos {
+            margin-top: 40px;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .video-card-content {
+            padding: 15px;
+        }
+        
+        .video-card-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+        
+        .video-card-meta {
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* 新闻搜索样式 */
+        .news-search-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .news-search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .news-search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        .news-search-date {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        .news-search-btn {
+            padding: 12px 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .news-search-results {
+            margin-top: 20px;
+        }
+        
+        .news-result-item {
+            background: rgba(45, 199, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .news-result-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .news-result-meta {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .news-result-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .news-result-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            color: var(--text-color);
+            transform: rotate(90deg);
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-align: center;
+        }
+        
+        .modal-switch {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+        
+        .modal-switch a {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* 用户名更新动画 */
+        .update-animation {
+            animation: updateFlash 0.5s ease;
+        }
+        
+        @keyframes updateFlash {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); background-color: rgba(45, 199, 255, 0.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 访客限制提示 */
+        .guest-restriction {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+        
+        .guest-restriction i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .guest-restriction h2 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .guest-restriction p {
+            color: var(--gray);
+            margin-bottom: 25px;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 40px 0 20px;
+            margin-top: 60px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column {
+            margin-bottom: 20px;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h4:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        /* 时间提醒设置样式 */
+        .time-reminder-settings {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .time-input {
+            width: 70px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-align: center;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+        
+        /* 全屏收藏模态框样式 */
+        #favoritesModal .modal-content {
+            max-width: 90%;
+            width: 90%;
+            max-height: 90%;
+            height: 90%;
+            padding: 20px;
+        }
+        
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            max-height: calc(100% - 60px);
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .favorite-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .favorite-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .favorite-card-header {
+            padding: 15px;
+            background: #f0f7ff;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .favorite-card-title {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .favorite-card-meta {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .favorite-card-content {
+            padding: 15px;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .favorite-card-description {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .favorite-card-actions {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* 发现页面的信息栏样式 */
+        .info-bar {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        
+        .info-item i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        /* 登录和注册页面的勾选框样式调整 */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .checkbox-container label {
+            margin: 0;
+            vertical-align: middle;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+            }
+            
+            .nav-links {
+                margin: 20px 0;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .article-title {
+                font-size: 1.8rem;
+            }
+            
+            .article-image {
+                height: 250px;
+            }
+            
+            .video-controls {
+                flex-wrap: wrap;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .auth-buttons {
+                margin-top: 15px;
+            }
+            
+            .comment-form {
+                flex-direction: column;
+            }
+            
+            .comment-submit {
+                margin-left: 0;
+                margin-top: 10px;
+                padding: 10px;
+            }
+            
+            .user-menu {
+                margin-top: 15px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-box {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .search-input {
+                border-radius: 8px 8px 0 0;
+            }
+            
+            .search-select {
+                border-radius: 0;
+                border-left: 1px solid var(--border-color);
+                border-right: 1px solid var(--border-color);
+            }
+            
+            .search-btn {
+                border-radius: 0 0 8px 8px;
+                padding: 12px;
+            }
+            
+            .news-search-form {
+                flex-direction: column;
+            }
+            
+            #favoritesModal .modal-content {
+                max-width: 95%;
+                width: 95%;
+            }
+            
+            .favorites-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-bar {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .post-options {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo" onclick="switchPage('home')">
+                    <i class="fas fa-brain"></i>
+                    <span>HIEngie</span>
+                </div>
+                
+                <ul class="nav-links">
+                    <li><a onclick="switchPage('home')">首页</a></li>
+                    <li><a onclick="handleTrendingAccess()">动态</a></li>
+                    <li><a onclick="switchPage('explore')" class="active">发现</a></li>
+                    <li><a onclick="handleProfileAccess()">个人中心</a></li>
+                </ul>
+                
+                <div class="auth-buttons" id="authButtons">
+                    <button class="btn btn-sm" onclick="showLoginModal()">登录</button>
+                    <button class="btn btn-sm" onclick="enableGuestMode()">访客</button>
+                </div>
+                
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" alt="用户头像" class="user-avatar">
+                    <span id="navbarUsername">用户名</span>
+                    <i class="fas fa-chevron-down"></i>
+                    
+                    <div class="dropdown">
+                        <a class="dropdown-item" onclick="switchPage('profile')">
+                            <i class="fas fa-user"></i> 个人资料
+                        </a>
+                        <a class="dropdown-item" onclick="showAccountSettings()">
+                            <i class="fas fa-cog"></i> 账号设置
+                        </a>
+                        <a class="dropdown-item" onclick="showFavorites()">
+                            <i class="fas fa-bookmark"></i> 我的收藏
+                        </a>
+                        <a class="dropdown-item" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> 退出登录
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主页内容 -->
+    <main class="container">
+        <div id="home-page" class="page">
+            <div class="hero">
+                <h1>探索精彩资讯世界</h1>
+                <p>HIEngie 为您提供最新、最热门的科技、设计和商业资讯，随时随地掌握行业动态</p>
+                <button class="btn" style="background: white; color: var(--primary); border: 2px solid white;" onclick="switchPage('explore')">开始探索</button>
+            </div>
+            
+            <!-- 搜索框 -->
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="输入关键词搜索...">
+                    <select class="search-select" id="searchType">
+                        <option value="local">本网页搜索</option>
+                        <option value="external">其他搜索</option>
+                    </select>
+                    <button class="search-btn" onclick="performSearch()">
+                        <i class="fas fa-search"></i> 搜索
+                    </button>
+                </div>
+            </div>
+            
+            <h2 class="section-title">热门资讯</h2>
+            <div class="news-grid">
+                <div class="news-card" onclick="showArticle(1)">
+                    <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="科技新闻">
+                    <div class="news-content">
+                        <div>
+                            <span class="tag tag-tech">科技</span>
+                            <span class="tag tag-business">商业</span>
+                        </div>
+                        <h3>人工智能将如何改变未来工作方式</h3>
+                        <p>随着AI技术的快速发展，各行各业的工作方式正在发生深刻变革...</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-clock"></i> 2小时前</span>
+                            <span><i class="far fa-eye"></i> 2,845</span>
+                            <span><i class="far fa-comment"></i> 128</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="news-card" onclick="showArticle(2)">
+                    <img src="https://images.unsplash.com/photo-1682687980961-78fa83781450?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="设计新闻">
+                    <div class="news-content">
+                        <div>
+                            <span class="tag tag-design">设计</span>
+                            <span class="tag tag-tech">创新</span>
+                        </div>
+                        <h3>2023年UI/UX设计趋势分析</h3>
+                        <p>极简主义、新拟态、玻璃形态...了解今年最流行的设计风格...</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-clock"></i> 1天前</span>
+                            <span><i class="far fa-eye"></i> 1,923</span>
+                            <span><i class="far fa-comment"></i> 96</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="news-card" onclick="showArticle(3)">
+                    <img src="https://images.unsplash.com/photo-1695653423035-a64c2816f5c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="商业新闻">
+                    <div class="news-content">
+                        <div>
+                            <span class="tag tag-business">商业</span>
+                            <span class="tag tag-tech">科技</span>
+                        </div>
+                        <h3>元宇宙经济：下一个万亿市场</h3>
+                        <p>从虚拟地产到数字藏品，元宇宙正在创造全新的经济模式...</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-clock"></i> 3天前</span>
+                            <span><i class="far fa-eye"></i> 3,451</span>
+                            <span><i class="far fa-comment"></i> 203</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dynamic-content">
+                <h2 class="section-title">实时动态</h2>
+                <ul class="trending-list">
+                    <li class="trending-item" onclick="showTrending(1)">
+                        <div class="trending-number">1</div>
+                        <div class="trending-content">
+                            <h4>苹果发布新一代iPhone 15系列</h4>
+                            <p>科技 ·  trending with #AppleEvent</p>
+                        </div>
+                    </li>
+                    <li class="trending-item" onclick="showTrending(2)">
+                        <div class="trending-number">2</div>
+                        <div class="trending-content">
+                            <h4>特斯拉人形机器人最新进展公布</h4>
+                            <p>人工智能 ·  5,892次浏览</p>
+                        </div>
+                    </li>
+                    <li class="trending-item" onclick="showTrending(3)">
+                        <div class="trending-number">3</div>
+                        <div class="trending-content">
+                            <h4>Web3.0技术如何改变互联网生态</h4>
+                            <p>区块链 ·  3,451次浏览</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- 动态页面 -->
+        <div id="trending-page" class="page">
+            <h2 class="section-title">最新动态</h2>
+            
+            <!-- 访客限制提示 -->
+            <div class="guest-restriction" id="trendingGuestRestriction" style="display: none;">
+                <i class="fas fa-lock"></i>
+                <h2>需要登录</h2>
+                <p>您需要登录账户才能查看和发布动态内容</p>
+                <button class="btn" onclick="showLoginModal()">立即登录</button>
+            </div>
+            
+            <div class="dynamic-content" id="trendingContent">
+                <!-- Facebook风格动态详情 -->
+                <div class="post-detail" onclick="showPostDetail(1)">
+                    <div class="post-header">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="用户头像" class="post-avatar">
+                        <div class="post-user-info">
+                            <div class="post-username">李明</div>
+                            <div class="post-time">2小时前 · 公开</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>全球人工智能大会在上海开幕，本次大会聚焦AI伦理、技术创新和产业应用，吸引了全球顶尖专家和企业参与。</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="AI大会" class="post-image">
+                    <div class="post-actions">
+                        <div class="post-action">
+                            <i class="far fa-thumbs-up"></i> 赞
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-comment"></i> 评论
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-share-square"></i> 分享
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-detail" onclick="showPostDetail(2)">
+                    <div class="post-header">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" alt="用户头像" class="post-avatar">
+                        <div class="post-user-info">
+                            <div class="post-username">王华</div>
+                            <div class="post-time">5小时前 · 公开</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>可持续设计成为建筑行业新标准，环保材料、节能技术和绿色认证正在重塑建筑行业的未来发展方向。</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1487958449943-2429e8b86230?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" alt="可持续建筑" class="post-image">
+                    <div class="post-actions">
+                        <div class="post-action">
+                            <i class="far fa-thumbs-up"></i> 赞
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-comment"></i> 评论
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-share-square"></i> 分享
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-detail" onclick="showPostDetail(3)">
+                    <div class="post-header">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="用户头像" class="post-avatar">
+                        <div class="post-user-info">
+                            <div class="post-username">张伟</div>
+                            <div class="post-time">8小时前 · 公开</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>新能源汽车销量同比增长85%，随着充电基础设施的完善和消费者环保意识增强，新能源汽车市场迎来爆发式增长。</p>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1593941707882-a5bac6861d75?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80" alt="新能源汽车" class="post-image">
+                    <div class="post-actions">
+                        <div class="post-action">
+                            <i class="far fa-thumbs-up"></i> 赞
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-comment"></i> 评论
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-share-square"></i> 分享
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 发现页面（包含视频播放功能） -->
+        <div id="explore-page" class="page active">
+            <!-- 信息栏：时间、位置、天气 -->
+            <div class="info-bar">
+                <div class="info-item">
+                    <i class="far fa-clock"></i>
+                    <span id="current-time">2023年10月20日 15:30:45</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="current-location">北京</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-cloud-sun"></i>
+                    <span id="current-weather">晴 25°C</span>
+                </div>
+            </div>
+            
+            <h2 class="section-title">要闻</h2>
+            
+            <!-- 新闻搜索区域 -->
+            <div class="news-search-container">
+                <h3 class="section-title">每日新闻搜索</h3>
+                <div class="news-search-form">
+                    <select class="news-search-input" id="newsSource">
+                        <option value="sina">新浪新闻</option>
+                        <option value="people">人民网</option>
+                        <option value="xinhua">新华网</option>
+                        <option value="tencent">腾讯新闻</option>
+                        <option value="netease">网易新闻</option>
+                    </select>
+                    <input type="date" class="news-search-date" id="newsDate" value="">
+                    <button class="news-search-btn" onclick="searchNews()">
+                        <i class="fas fa-search"></i> 搜索新闻
+                    </button>
+                </div>
+                
+                <div class="news-search-results" id="newsResults">
+                    <!-- 搜索结果将在这里显示 -->
+                </div>
+            </div>
+            
+            <div class="news-grid">
+                <div class="news-card" onclick="showArticle(4)">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="数据分析">
+                    <div class="news-content">
+                        <div>
+                            <span class="tag tag-tech">数据科学</span>
+                        </div>
+                        <h3>大数据分析在商业决策中的应用</h3>
+                        <p>了解企业如何利用大数据分析提高决策准确性，优化业务流程...</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-clock"></i> 5天前</span>
+                            <span><i class="far fa-eye"></i> 2,112</span>
+                            <span><i class="far fa-comment"></i> 87</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="news-card" onclick="showArticle(5)">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1115&q=80" alt="市场营销">
+                    <div class="news-content">
+                        <div>
+                            <span class="tag tag-business">营销</span>
+                        </div>
+                        <h3>2023年数字营销趋势与策略</h3>
+                        <p>从个性化内容到AI驱动的营销自动化，探索最新营销趋势...</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-clock"></i> 1周前</span>
+                            <span><i class="far fa-eye"></i> 3,874</span>
+                            <span><i class="far fa-comment"></i> 142</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="news-card" onclick="showArticle(6)">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80" alt="团队协作">
+                    <div class="news-content">
+                        <div>
+                            <span class="tag tag-business">管理</span>
+                            <span class="tag tag-tech">协作</span>
+                        </div>
+                        <h3>远程团队高效协作工具与技巧</h3>
+                        <p>探索提高远程团队生产力的最佳工具和有效协作方法...</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-clock"></i> 2周前</span>
+                            <span><i class="far fa-eye"></i> 4,326</span>
+                            <span><i class="far fa-comment"></i> 189</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 阅读区域 -->
+            <div class="reading-section">
+                <h2 class="section-title">阅读</h2>
+                <div class="documents-grid">
+                    <div class="document-card" onclick="openDocument(1)">
+                        <div class="document-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="document-content">
+                            <h3 class="document-title">人工智能白皮书2023</h3>
+                            <div class="document-meta">
+                                <span>PDF · 2.5MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="document-card" onclick="openDocument(2)">
+                        <div class="document-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="document-content">
+                            <h3 class="document-title">Web开发最佳实践</h3>
+                            <div class="document-meta">
+                                <span>电子书 · 5.1MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="document-card" onclick="openDocument(3)">
+                        <div class="document-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="document-content">
+                            <h3 class="document-title">数据分析报告</h3>
+                            <div class="document-meta">
+                                <span>PDF · 1.2MB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 影音区域 -->
+            <div class="video-container">
+                <div class="video-header">
+                    <h1 class="video-title">人工智能与未来科技</h1>
+                    <p class="video-description">探索人工智能如何改变我们的世界，以及未来科技的发展趋势。</p>
+                </div>
+                
+                <div class="video-platform-selector">
+                    <button class="video-platform-btn active" onclick="switchVideoPlatform('bilibili')">哔哩哔哩</button>
+                    <button class="video-platform-btn" onclick="switchVideoPlatform('youtube')">YouTube</button>
+                    <button class="video-platform-btn" onclick="switchVideoPlatform('youku')">优酷</button>
+                    <button class="video-platform-btn" onclick="switchVideoPlatform('iqiyi')">爱奇艺</button>
+                </div>
+                
+                <div class="video-wrapper">
+                    <iframe src="https://player.bilibili.com/player.html?bvid=BV1GJ411x7h7" allowfullscreen id="videoPlayer"></iframe>
+                </div>
+                
+                <div class="video-controls">
+                    <button class="control-btn" onclick="playVideo()">
+                        <i class="fas fa-play"></i> 播放
+                    </button>
+                    <button class="control-btn" onclick="pauseVideo()">
+                        <i class="fas fa-pause"></i> 暂停
+                    </button>
+                    <button class="control-btn" onclick="muteVideo()">
+                        <i class="fas fa-volume-mute"></i> 静音
+                    </button>
+                    <button class="control-btn" onclick="fullscreenVideo()">
+                        <i class="fas fa-expand"></i> 全屏
+                    </button>
+                </div>
+            </div>
+            
+            <div class="related-videos">
+                <h2 class="section-title">推荐视频</h2>
+                <div class="video-grid">
+                    <div class="video-card" onclick="switchToVideo(1)">
+                        <img src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" alt="AI技术" class="video-thumbnail">
+                        <div class="video-card-content">
+                            <h3 class="video-card-title">AI技术的最新突破</h3>
+                            <div class="video-card-meta">
+                                <span>科技频道</span>
+                                <span>15:42</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card" onclick="switchToVideo(2)">
+                        <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1120&q=80" alt="机器学习" class="video-thumbnail">
+                        <div class="video-card-content">
+                            <h3 class="video-card-title">机器学习入门指南</h3>
+                            <div class="video-card-meta">
+                                <span>教育频道</span>
+                                <span>22:18</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-card" onclick="switchToVideo(3)">
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1105&q=80" alt="深度学习" class="video-thumbnail">
+                        <div class="video-card-content">
+                            <h3 class="video-card-title">深度学习的未来</h3>
+                            <div class="video-card-meta">
+                                <span>科技频道</span>
+                                <span>28:05</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 个人中心页面 -->
+        <div id="profile-page" class="page">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" alt="用户头像" class="avatar" id="userAvatar" onclick="document.getElementById('avatarInput').click()">
+                    <input type="file" id="avatarInput" style="display: none;" onchange="changeAvatar(this)">
+                    <h1 class="username-display" id="usernameDisplay">张小明</h1>
+                    <p id="profileEmail">zhangxiaoming@example.com</p>
+                    <button class="btn" style="margin-top: 10px;" onclick="editProfile()">编辑资料</button>
+                </div>
+                
+                <!-- 访客限制提示 -->
+                <div class="guest-restriction" id="profileGuestRestriction" style="display: none;">
+                    <i class="fas fa-lock"></i>
+                    <h2>需要登录</h2>
+                    <p>您需要登录账户才能使用个人中心功能</p>
+                    <button class="btn" onclick="showLoginModal()">立即登录</button>
+                </div>
+                
+                <!-- 发布动态模块 -->
+                <div class="post-form" id="postForm">
+                    <h3 class="section-title">发布动态</h3>
+                    <textarea class="post-input" id="postContent" placeholder="分享你的想法..."></textarea>
+                    
+                    <!-- 上传预览区域 -->
+                    <div class="upload-preview" id="uploadPreview"></div>
+                    
+                    <div class="post-actions">
+                        <div class="post-options">
+                            <span class="post-option" onclick="document.getElementById('postImage').click()">
+                                <i class="fas fa-image"></i> 图片
+                            </span>
+                            <input type="file" id="postImage" style="display: none;" accept="image/*" onchange="handleFileUpload(this, 'image')">
+                            
+                            <span class="post-option" onclick="document.getElementById('postVideo').click()">
+                                <i class="fas fa-video"></i> 视频
+                            </span>
+                            <input type="file" id="postVideo" style="display: none;" accept="video/*" onchange="handleFileUpload(this, 'video')">
+                            
+                            <span class="post-option" onclick="document.getElementById('postFile').click()">
+                                <i class="fas fa-file"></i> 文件
+                            </span>
+                            <input type="file" id="postFile" style="display: none;" onchange="handleFileUpload(this, 'file')">
+                            
+                            <span class="post-option" onclick="getLocation()">
+                                <i class="fas fa-map-marker-alt"></i> 位置
+                            </span>
+                        </div>
+                        <button class="btn" onclick="publishPost()">发布</button>
+                    </div>
+                </div>
+                
+                <div class="profile-form" id="profileForm">
+                    <h3 class="section-title">个人信息</h3>
+                    
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" class="form-control" value="张小明">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">电子邮箱</label>
+                        <input type="email" id="email" class="form-control" value="zhangxiaoming@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">个人简介</label>
+                        <textarea id="bio" class="form-control" rows="4">热爱科技和设计的软件工程师，喜欢探索新事物。</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="avatar">更换头像</label>
+                        <input type="file" id="avatar" class="form-control" onchange="changeAvatar(this)">
+                    </div>
+                    
+                    <button class="btn" style="width: 100%; background: var(--primary); color: white;" onclick="saveProfile()">保存更改</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 文章详情页面 -->
+        <div id="article-page" class="page">
+            <div class="article-container">
+                <div class="article-header">
+                    <h1 class="article-title">人工智能将如何改变未来工作方式</h1>
+                    <div class="article-meta">
+                        <span><i class="fas fa-user"></i> 张明</span>
+                        <span><i class="fas fa-calendar"></i> 2023-10-15</span>
+                        <span><i class="fas fa-eye"></i> 2,845次阅读</span>
+                        <span><i class="fas fa-clock"></i> 8分钟阅读</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80" alt="文章图片" class="article-image">
+                </div>
+                
+                <div class="article-content">
+                    <p>随着人工智能技术的快速发展，各行各业的工作方式正在发生深刻变革。从自动化流程到智能决策支持，AI正在重塑我们的工作环境。</p>
+                    
+                    <p>在制造业，智能机器人已经能够完成复杂的装配任务，不仅提高了生产效率，还减少了人为错误。工人角色正在从体力劳动转向机器监督和维护。</p>
+                    
+                    <p>在知识工作领域，AI助手正在帮助专业人士处理大量信息。律师可以使用AI快速分析案例，医生可以借助AI进行诊断，金融分析师可以利用AI预测市场趋势。</p>
+                    
+                    <p>远程工作和混合工作模式因AI技术而变得更加高效。智能调度系统可以优化团队协作，虚拟助手可以处理日常行政任务，让员工更专注于创造性工作。</p>
+                    
+                    <p>然而，这种转变也带来了挑战。员工需要不断学习新技能，适应与AI协作的工作方式。企业和教育机构需要提供相应的培训，帮助劳动力顺利过渡到AI增强的工作环境。</p>
+                    
+                    <p>未来，我们可能会看到更多现在无法想象的新职业出现，正如互联网创造了网页设计师、社交媒体经理等职业一样，AI时代也将创造全新的工作机会。</p>
+                </div>
+                
+                <div class="article-actions">
+                    <div class="action-btn" onclick="likeArticle()">
+                        <i class="far fa-heart"></i>
+                        <span>点赞</span>
+                    </div>
+                    <div class="action-btn" onclick="bookmarkArticle()">
+                        <i class="far fa-bookmark"></i>
+                        <span>收藏</span>
+                    </div>
+                    <div class="action-btn" onclick="shareArticle()">
+                        <i class="far fa-share-square"></i>
+                        <span>分享</span>
+                    </div>
+                </div>
+                
+                <!-- 评论区域 -->
+                <div class="comments-section">
+                    <h3 class="section-title">评论</h3>
+                    
+                    <div class="comment-form">
+                        <textarea class="comment-input" id="commentInput" placeholder="写下你的评论..."></textarea>
+                        <button class="comment-submit" onclick="submitComment()">发布</button>
+                    </div>
+                    
+                    <div class="comments-list" id="commentsList">
+                        <!-- 评论将动态添加到这里 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 登录模态框 -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('loginModal')">&times;</span>
+            <h2 class="modal-title">登录</h2>
+            
+            <div class="form-group">
+                <label for="loginEmail">电子邮箱</label>
+                <input type="email" id="loginEmail" class="form-control" placeholder="请输入您的邮箱">
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">密码</label>
+                <input type="password" id="loginPassword" class="form-control" placeholder="请输入您的密码">
+            </div>
+            
+            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">记住我</label>
+                </div>
+                <a href="#" style="color: var(--accent); font-size: 0.9rem;">忘记密码?</a>
+            </div>
+            
+            <button class="btn" style="width: 100%; margin-top: 10px; background: var(--primary); color: white;" onclick="login()">登录</button>
+            
+            <div class="modal-switch">
+                还没有账号? <a onclick="showRegisterModal()">立即注册</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 注册模态框 -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('registerModal')">&times;</span>
+            <h2 class="modal-title">注册</h2>
+            
+            <div class="form-group">
+                <label for="registerUsername">用户名</label>
+                <input type="text" id="registerUsername" class="form-control" placeholder="请输入用户名">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerEmail">电子邮箱</label>
+                <input type="email" id="registerEmail" class="form-control" placeholder="请输入您的邮箱">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerPassword">密码</label>
+                <input type="password" id="registerPassword" class="form-control" placeholder="请设置密码">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerConfirm">确认密码</label>
+                <input type="password" id="registerConfirm" class="form-control" placeholder="请再次输入密码">
+            </div>
+            
+            <div class="form-group checkbox-container">
+                <input type="checkbox" id="agreeTerms">
+                <label for="agreeTerms">我已阅读并同意<a href="#" style="color: var(--accent);">服务条款</a>和<a href="#" style="color: var(--accent;">隐私政策</a></label>
+            </div>
+            
+            <button class="btn" style="width: 100%; margin-top: 10px; background: var(--primary); color: white;" onclick="register()">注册</button>
+            
+            <div class="modal-switch">
+                已有账号? <a onclick="showLoginModal()">立即登录</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 账号设置模态框 -->
+    <div class="modal" id="accountSettingsModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('accountSettingsModal')">&times;</span>
+            <h2 class="modal-title">账号设置</h2>
+            
+            <div class="form-group">
+                <label>主题模式</label>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="setTheme('light')">浅色模式</button>
+                    <button class="btn" onclick="setTheme('dark')">深色模式</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="notification">通知设置</label>
+                <select id="notification" class="form-control">
+                    <option value="all">所有通知</option>
+                    <option value="important">仅重要通知</option>
+                    <option value="none">关闭通知</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="language">语言偏好</label>
+                <select id="language" class="form-control">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>时间提醒设置</label>
+                <div class="time-reminder-settings">
+                    <input type="number" id="reminderHours" class="time-input" min="0" max="23" value="1" placeholder="时">
+                    <span>:</span>
+                    <input type="number" id="reminderMinutes" class="time-input" min="0" max="59" value="0" placeholder="分">
+                    <span>:</span>
+                    <input type="number" id="reminderSeconds" class="time-input" min="0" max="59" value="0" placeholder="秒">
+                    <button class="btn btn-sm" onclick="testReminder()">测试提醒</button>
+                </div>
+                <small style="color: var(--gray); margin-top: 5px; display: block;">设置定时提醒功能，到达设定时间后会发出提醒</small>
+            </div>
+            
+            <div class="form-group">
+                <label>提醒类型</label>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="reminderSound" checked>
+                    <label for="reminderSound">声音提醒</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="reminderNotification" checked>
+                    <label for="reminderNotification">桌面通知</label>
+                </div>
+            </div>
+            
+            <button class="btn" style="width: 100%; background: var(--primary); color: white;" onclick="saveAccountSettings()">保存设置</button>
+        </div>
+    </div>
+    
+    <!-- 我的收藏模态框 -->
+    <div class="modal" id="favoritesModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('favoritesModal')">&times;</span>
+            <h2 class="modal-title">我的收藏</h2>
+            
+            <div class="favorites-grid" id="favoritesGrid">
+                <div class="favorite-card">
+                    <div class="favorite-card-header">
+                        <h3 class="favorite-card-title">人工智能将如何改变未来工作方式</h3>
+                        <div class="favorite-card-meta">收藏时间: 2023-10-20</div>
+                    </div>
+                    <div class="favorite-card-content">
+                        <p class="favorite-card-description">随着AI技术的快速发展，各行各业的工作方式正在发生深刻变革。从自动化流程到智能决策支持，AI正在重塑我们的工作环境。</p>
+                    </div>
+                    <div class="favorite-card-actions">
+                        <button class="btn btn-sm" onclick="openFavorite(1)">查看</button>
+                    </div>
+                </div>
+                
+                <div class="favorite-card">
+                    <div class="favorite-card-header">
+                        <h3 class="favorite-card-title">2023年UI/UX设计趋势分析</h3>
+                        <div class="favorite-card-meta">收藏时间: 2023-10-18</div>
+                    </div>
+                    <div class="favorite-card-content">
+                        <p class="favorite-card-description">极简主义、新拟态、玻璃形态...了解今年最流行的设计风格和用户体验趋势，为您的产品设计提供灵感。</p>
+                    </div>
+                    <div class="favorite-card-actions">
+                        <button class="btn btn-sm" onclick="openFavorite(2)">查看</button>
+                    </div>
+                </div>
+                
+                <div class="favorite-card">
+                    <div class="favorite-card-header">
+                        <h3 class="favorite-card-title">大数据分析在商业决策中的应用</h3>
+                        <div class="favorite-card-meta">收藏时间: 2023-10-15</div>
+                    </div>
+                    <div class="favorite-card-content">
+                        <p class="favorite-card-description">了解企业如何利用大数据分析提高决策准确性，优化业务流程，提升竞争力。案例研究和实用技巧分享。</p>
+                    </div>
+                    <div class="favorite-card-actions">
+                        <button class="btn btn-sm" onclick="openFavorite(3)">查看</button>
+                    </div>
+                </div>
+                
+                <div class="favorite-card">
+                    <div class="favorite-card-header">
+                        <h3 class="favorite-card-title">远程团队高效协作工具与技巧</h3>
+                        <div class="favorite-card-meta">收藏时间: 2023-10-12</div>
+                    </div>
+                    <div class="favorite-card-content">
+                        <p class="favorite-card-description">探索提高远程团队生产力的最佳工具和有效协作方法，包括沟通策略、项目管理工具和团队建设活动。</p>
+                    </div>
+                    <div class="favorite-card-actions">
+                        <button class="btn btn-sm" onclick="openFavorite(4)">查看</button>
+                    </div>
+                </div>
+                
+                <div class="favorite-card">
+                    <div class="favorite-card-header">
+                        <h3 class="favorite-card-title">Web3.0技术如何改变互联网生态</h3>
+                        <div class="favorite-card-meta">收藏时间: 2023-10-10</div>
+                    </div>
+                    <div class="favorite-card-content">
+                        <p class="favorite-card-description">从区块链到去中心化应用，Web3.0正在重新定义互联网的未来。了解这项技术将如何影响我们的数字生活。</p>
+                    </div>
+                    <div class="favorite-card-actions">
+                        <button class="btn btn-sm" onclick="openFavorite(5)">查看</button>
+                    </div>
+                </div>
+                
+                <div class="favorite-card">
+                    <div class="favorite-card-header">
+                        <h3 class="favorite-card-title">可持续设计成为建筑行业新标准</h3>
+                        <div class="favorite-card-meta">收藏时间: 2023-10-08</div>
+                    </div>
+                    <div class="favorite-card-content">
+                        <p class="favorite-card-description">环保材料、节能技术和绿色认证正在重塑建筑行业的未来发展方向。探索可持续建筑的最新趋势和创新。</p>
+                    </div>
+                    <div class="favorite-card-actions">
+                        <button class="btn btn-sm" onclick="openFavorite(6)">查看</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 团队介绍模态框 -->
+    <div class="modal" id="teamModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('teamModal')">&times;</span>
+            <h2 class="modal-title">团队介绍</h2>
+            
+            <div class="team-content">
+                <p>HIEngie团队由一群热爱技术和创新的人士组成，我们致力于提供高质量的资讯和内容。从2024年的7KB到如今2025年8月21日的126KB，仍很简陋但已不易。</p>
+                
+                <h3>核心成员</h3>
+                <ul>
+                    <li><strong>匿名</strong> - 主要负责人</li>
+                </ul>
+                
+                <h3>我们的使命</h3>
+                <p>通过技术让信息获取更加便捷，帮助用户更好地理解世界，连接未来。</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 联系我们模态框 -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('contactModal')">&times;</span>
+            <h2 class="modal-title">联系我们</h2>
+            
+            <div class="form-group">
+                <label for="contactName">您的昵称</label>
+                <input type="text" id="contactName" class="form-control" placeholder="请输入您的昵称">
+            </div>
+            
+            <div class="form-group">
+                <label for="contactEmail">电子邮箱</label>
+                <input type="email" id="contactEmail" class="form-control" placeholder="请输入您的邮箱">
+            </div>
+            
+            <div class="form-group">
+                <label for="contactMessage">内容</label>
+                <textarea id="contactMessage" class="form-control" rows="5" placeholder="请输入您想说的话..."></textarea>
+            </div>
+            
+            <button class="btn" style="width: 100%; background: var(--primary); color: white;" onclick="submitContact()">提交</button>
+        </div>
+    </div>
+    
+    <!-- 加入我们模态框 -->
+    <div class="modal" id="joinModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('joinModal')">&times;</span>
+            <h2 class="modal-title">加入我们</h2>
+            
+            <div class="join-content">
+                <p>HIEngie欢迎有才华、有激情的人才加入我们的团队。</p>
+                
+                <h3>当前空缺</h3>
+                <ul>
+                    <li>爱好者</li>
+                </ul>
+                
+                <h3>加入方式</h3>
+                <p>请将您的简历和作品集发送至: <strong>careers@hiengie.com</strong></p>
+                <p>我们会在收到申请后的3个工作日内与您联系。（这是未来的一个假想了）</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 常见问题模态框 -->
+    <div class="modal" id="faqModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('faqModal')">&times;</span>
+            <h2 class="modal-title">常见问题</h2>
+            
+            <div class="faq-content">
+                <div class="faq-item">
+                    <h3>如何注册账号？</h3>
+                    <p>点击页面右上角的"登录"按钮，然后选择"立即注册"，填写相关信息即可完成注册。</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>如何修改个人资料？</h3>
+                    <p>登录后，点击"个人中心"，然后点击"编辑资料"按钮即可修改您的个人信息。</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>如何发布动态？</h3>
+                    <p>在个人中心页面，找到"发布动态"区域，输入您想分享的内容，点击"发布"按钮即可。</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>如何收藏文章？</h3>
+                    <p>在文章详情页面，点击"收藏"按钮即可将文章添加到您的收藏夹。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>关于我们</h4>
+                    <ul class="footer-links">
+                        <li><a onclick="showTeamModal()">团队介绍</a></li>
+                        <li><a onclick="showContactModal()">联系我们</a></li>
+                        <li><a onclick="showJoinModal()">加入我们</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>帮助支持</h4>
+                    <ul class="footer-links">
+                        <li><a onclick="showFaqModal()">常见问题</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>谢谢关注</h4>
+                    <ul class="footer-links">
+                        <li><a onclick="showWeibo()"><i class="fab fa-weibo"></i> 微博</a></li>
+                        <li><a onclick="showWechat()"><i class="fab fa-weixin"></i> 微信</a></li>
+                        <li><a onclick="showZhihu()"><i class="fab fa-zhihu"></i> 知乎</a></li>
+                        <li><a href="https://github.com/HIEngie" target="_blank"><i class="fab fa-github"></i> GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 1994 - 2025 HIEngie All Rights Reserved. 版权所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 当前用户状态
+        let currentUser = null;
+        let isGuestMode = true;
+        let currentVideoPlatform = 'bilibili';
+        let uploadedFiles = [];
+        let currentLocation = null;
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 默认显示访客模式
+            document.getElementById('authButtons').style.display = 'flex';
+            document.getElementById('userMenu').style.display = 'none';
+            
+            // 设置日期输入框默认值为今天
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('newsDate').value = formattedDate;
+            
+            // 加载模拟评论
+            loadComments();
+            
+            // 更新访客状态UI
+            updateGuestUI();
+            
+            // 检查是否有保存的主题偏好
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+            
+            // 检查是否有保存的时间提醒设置
+            const savedReminder = localStorage.getItem('timeReminder');
+            if (savedReminder) {
+                const reminder = JSON.parse(savedReminder);
+                document.getElementById('reminderHours').value = reminder.hours;
+                document.getElementById('reminderMinutes').value = reminder.minutes;
+                document.getElementById('reminderSeconds').value = reminder.seconds;
+            }
+            
+            // 启动实时时钟
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // 尝试获取位置信息
+            getLocation();
+            
+            // 获取天气信息
+            getWeather();
+        });
+        
+        // 更新实时时钟
+        function updateClock() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('current-time').textContent = now.toLocaleDateString('zh-CN', options);
+        }
+        
+        // 获取位置信息
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    showPosition,
+                    showDefaultLocation
+                );
+            } else {
+                showDefaultLocation();
+            }
+        }
+        
+        function showPosition(position) {
+            // 这里简化处理，实际应用中可以通过API获取具体位置名称
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            
+            // 模拟根据坐标获取位置名称
+            if (latitude > 39 && latitude < 42 && longitude > 115 && longitude < 118) {
+                document.getElementById('current-location').textContent = '北京';
+                currentLocation = '北京';
+            } else if (latitude > 30 && latitude < 32 && longitude > 120 && longitude < 122) {
+                document.getElementById('current-location').textContent = '上海';
+                currentLocation = '上海';
+            } else {
+                document.getElementById('current-location').textContent = `纬度: ${latitude.toFixed(2)}, 经度: ${longitude.toFixed(2)}`;
+                currentLocation = `纬度: ${latitude.toFixed(2)}, 经度: ${longitude.toFixed(2)}`;
+            }
+        }
+        
+        function showDefaultLocation() {
+            document.getElementById('current-location').textContent = '北京';
+            currentLocation = '北京';
+        }
+        
+        // 获取天气信息
+        function getWeather() {
+            // 模拟天气API调用
+            const locations = {
+                '北京': '晴 25°C',
+                '上海': '多云 23°C',
+                '广州': '阵雨 28°C',
+                '深圳': '晴 27°C',
+                '杭州': '阴 22°C'
+            };
+            
+            const location = document.getElementById('current-location').textContent;
+            const weather = locations[location] || '晴 25°C';
+            
+            document.getElementById('current-weather').textContent = weather;
+        }
+        
+        // 切换页面
+        function switchPage(page) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示选中页面
+            document.getElementById(`${page}-page`).classList.add('active');
+            
+            // 更新导航激活状态
+            document.querySelectorAll('.nav-links a').forEach(a => {
+                a.classList.remove('active');
+            });
+            
+            // 为当前活动链接添加active类
+            const activeLink = Array.from(document.querySelectorAll('.nav-links a')).find(
+                a => a.textContent === 
+                    (page === 'home' ? '首页' : 
+                     page === 'trending' ? '动态' : 
+                     page === 'explore' ? '发现' : 
+                     page === 'profile' ? '个人中心' : '')
+            );
+            
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // 滚动到页面顶部
+            window.scrollTo(0, 0);
+        }
+        
+        // 处理动态页面访问
+        function handleTrendingAccess() {
+            if (isGuestMode) {
+                alert('访客无法查看动态，请先登录');
+                showLoginModal();
+            } else {
+                switchPage('trending');
+            }
+        }
+        
+        // 处理个人中心访问
+        function handleProfileAccess() {
+            if (isGuestMode) {
+                alert('访客无法访问个人中心，请先登录');
+                showLoginModal();
+            } else {
+                switchPage('profile');
+            }
+        }
+        
+        // 更新访客模式UI
+        function updateGuestUI() {
+            if (isGuestMode) {
+                // 隐藏动态和个人中心的内容，显示提示
+                document.getElementById('trendingContent').style.display = 'none';
+                document.getElementById('trendingGuestRestriction').style.display = 'block';
+                document.getElementById('postForm').style.display = 'none';
+                document.getElementById('profileForm').style.display = 'none';
+                document.getElementById('profileGuestRestriction').style.display = 'block';
+            } else {
+                // 显示所有内容
+                document.getElementById('trendingContent').style.display = 'block';
+                document.getElementById('trendingGuestRestriction').style.display = 'none';
+                document.getElementById('postForm').style.display = 'block';
+                document.getElementById('profileForm').style.display = 'block';
+                document.getElementById('profileGuestRestriction').style.display = 'none';
+            }
+        }
+        
+        // 显示文章详情
+        function showArticle(articleId) {
+            switchPage('article');
+            // 这里可以根据articleId加载不同的内容
+        }
+        
+        // 显示动态详情
+        function showTrending(trendId) {
+            if (isGuestMode) {
+                alert('访客无法查看动态，请先登录');
+                showLoginModal();
+                return;
+            }
+            alert(`正在加载动态 #${trendId}...`);
+            // 实际应用中这里会加载动态内容
+        }
+        
+        function showPostDetail(postId) {
+            if (isGuestMode) {
+                alert('访客无法查看动态详情，请先登录');
+                showLoginModal();
+                return;
+            }
+            alert(`正在加载动态详情 #${postId}...`);
+            // 实际应用中这里会加载动态详情
+        }
+        
+        // 显示登录模态框
+        function showLoginModal() {
+            closeAllModals();
+            document.getElementById('loginModal').classList.add('active');
+        }
+        
+        // 显示注册模态框
+        function showRegisterModal() {
+            closeAllModals();
+            document.getElementById('registerModal').classList.add('active');
+        }
+        
+        // 显示账号设置模态框
+        function showAccountSettings() {
+            closeAllModals();
+            document.getElementById('accountSettingsModal').classList.add('active');
+        }
+        
+        // 显示我的收藏模态框
+        function showFavorites() {
+            closeAllModals();
+            document.getElementById('favoritesModal').classList.add('active');
+        }
+        
+        // 显示团队介绍模态框
+        function showTeamModal() {
+            closeAllModals();
+            document.getElementById('teamModal').classList.add('active');
+        }
+        
+        // 显示联系我们模态框
+        function showContactModal() {
+            closeAllModals();
+            document.getElementById('contactModal').classList.add('active');
+        }
+        
+        // 显示加入我们模态框
+        function showJoinModal() {
+            closeAllModals();
+            document.getElementById('joinModal').classList.add('active');
+        }
+        
+        // 显示常见问题模态框
+        function showFaqModal() {
+            closeAllModals();
+            document.getElementById('faqModal').classList.add('active');
+        }
+        
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+        
+        // 访客模式
+        function enableGuestMode() {
+            isGuestMode = true;
+            currentUser = null;
+            
+            // 更新UI
+            document.getElementById('authButtons').style.display = 'flex';
+            document.getElementById('userMenu').style.display = 'none';
+            document.getElementById('usernameDisplay').textContent = '访客用户';
+            document.getElementById('profileEmail').textContent = 'hiengie@example.com';
+            
+            // 更新访客UI
+            updateGuestUI();
+            
+            alert('您已进入访客模式，部分功能可能受限');
+        }
+        
+        // 登录功能
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('请输入邮箱和密码');
+                return;
+            }
+            
+            // 模拟登录成功
+            currentUser = {
+                username: document.getElementById('registerUsername').value || '测试用户',
+                email: email
+            };
+            isGuestMode = false;
+            
+            // 更新UI
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userMenu').style.display = 'flex';
+            document.getElementById('usernameDisplay').textContent = currentUser.username;
+            document.getElementById('navbarUsername').textContent = currentUser.username;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // 更新访客UI
+            updateGuestUI();
+            
+            // 关闭模态框
+            closeModal('loginModal');
+            
+            alert('登录成功！');
+        }
+        
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+            const agree = document.getElementById('agreeTerms').checked;
+            
+            if (!username || !email || !password || !confirm) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!agree) {
+                alert('请同意服务条款和隐私政策');
+                return;
+            }
+            
+            // 模拟注册成功
+            currentUser = {
+                username: username,
+                email: email
+            };
+            isGuestMode = false;
+            
+            // 更新UI
+            document.getElementById('authButtons').style.display = 'none';
+            document.getElementById('userMenu').style.display = 'flex';
+            document.getElementById('usernameDisplay').textContent = currentUser.username;
+            document.getElementById('navbarUsername').textContent = currentUser.username;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // 更新访客UI
+            updateGuestUI();
+            
+            // 关闭模态框
+            closeModal('registerModal');
+            
+            alert('注册成功！已自动登录');
+        }
+        
+        // 退出登录
+        function logout() {
+            currentUser = null;
+            isGuestMode = true;
+            
+            // 更新UI
+            document.getElementById('authButtons').style.display = 'flex';
+            document.getElementById('userMenu').style.display = 'none';
+            document.getElementById('usernameDisplay').textContent = '访客用户';
+            document.getElementById('profileEmail').textContent = 'hiengie@example.com';
+            
+            // 更新访客UI
+            updateGuestUI();
+            
+            // 回到首页
+            switchPage('home');
+            
+            alert('已退出登录');
+        }
+        
+        // 编辑个人资料
+        function editProfile() {
+            if (isGuestMode) {
+                alert('请先登录以编辑个人资料');
+                showLoginModal();
+                return;
+            }
+            
+            alert('进入编辑模式');
+            // 实际应用中这里会启用表单编辑
+        }
+        
+        // 保存个人资料
+        function saveProfile() {
+            if (isGuestMode) {
+                alert('请先登录以保存个人资料');
+                showLoginModal();
+                return;
+            }
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const bio = document.getElementById('bio').value;
+            
+            // 验证输入
+            if (!username.trim()) {
+                alert('用户名不能为空');
+                return;
+            }
+            
+            if (!email.trim() || !isValidEmail(email)) {
+                alert('请输入有效的电子邮箱');
+                return;
+            }
+            
+            // 更新用户信息
+            currentUser.username = username;
+            currentUser.email = email;
+            currentUser.bio = bio;
+            
+            // 更新UI
+            document.getElementById('usernameDisplay').textContent = username;
+            document.getElementById('navbarUsername').textContent = username;
+            document.getElementById('profileEmail').textContent = email;
+            
+            // 添加更新动画
+            document.getElementById('usernameDisplay').classList.add('update-animation');
+            
+            // 移除动画类，以便下次可以再次添加
+            setTimeout(() => {
+                document.getElementById('usernameDisplay').classList.remove('update-animation');
+            }, 500);
+            
+            alert('个人资料已保存');
+        }
+        
+        // 更换头像
+        function changeAvatar(input) {
+            if (isGuestMode) {
+                alert('请先登录以更换头像');
+                showLoginModal();
+                return;
+            }
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('userAvatar').src = e.target.result;
+                    document.querySelector('.user-avatar').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+                alert('头像已更新');
+            }
+        }
+        
+        // 简单的邮箱验证
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.([^\s@]{2,})+$/;
+            return re.test(email);
+        }
+        
+        // 文章操作功能
+        function likeArticle() {
+            if (isGuestMode) {
+                alert('请先登录以点赞文章');
+                showLoginModal();
+                return;
+            }
+            alert('已点赞');
+        }
+        
+        function bookmarkArticle() {
+            if (isGuestMode) {
+                alert('请先登录以收藏文章');
+                showLoginModal();
+                return;
+            }
+            alert('已收藏');
+        }
+        
+        function shareArticle() {
+            alert('分享功能即将开放');
+        }
+        
+        // 评论功能
+        function submitComment() {
+            if (isGuestMode) {
+                alert('请先登录以发表评论');
+                showLoginModal();
+                return;
+            }
+            
+            const commentInput = document.getElementById('commentInput');
+            const commentText = commentInput.value.trim();
+            
+            if (!commentText) {
+                alert('评论内容不能为空');
+                return;
+            }
+            
+            // 创建新评论
+            const comment = {
+                id: Date.now(),
+                author: currentUser.username,
+                avatar: document.getElementById('userAvatar').src,
+                content: commentText,
+                time: new Date().toLocaleString()
+            };
+            
+            // 保存评论到localStorage
+            saveComment(comment);
+            
+            // 添加到评论列表
+            addCommentToDOM(comment);
+            
+            // 清空输入框
+            commentInput.value = '';
+            
+            alert('评论已发布');
+        }
+        
+        function saveComment(comment) {
+            // 从localStorage获取现有评论或初始化空数组
+            const comments = JSON.parse(localStorage.getItem('articleComments') || '[]');
+            
+            // 添加新评论
+            comments.push(comment);
+            
+            // 保存回localStorage
+            localStorage.setItem('articleComments', JSON.stringify(comments));
+        }
+        
+        function loadComments() {
+            const comments = JSON.parse(localStorage.getItem('articleComments') || '[]');
+            const commentsList = document.getElementById('commentsList');
+            
+            // 清空现有评论
+            commentsList.innerHTML = '';
+            
+            // 添加所有评论
+            comments.forEach(comment => {
+                addCommentToDOM(comment);
+            });
+        }
+        
+        function addCommentToDOM(comment) {
+            const commentsList = document.getElementById('commentsList');
+            
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment';
+            commentElement.innerHTML = `
+                <div class="comment-header">
+                    <img src="${comment.avatar}" alt="${comment.author}" class="comment-avatar">
+                    <span class="comment-author">${comment.author}</span>
+                    <span class="comment-time">${comment.time}</span>
+                </div>
+                <div class="comment-content">${comment.content}</div>
+            `;
+            
+            commentsList.appendChild(commentElement);
+        }
+        
+        // 处理文件上传
+        function handleFileUpload(input, type) {
+            if (isGuestMode) {
+                alert('请先登录以上传文件');
+                showLoginModal();
+                return;
+            }
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const fileData = {
+                        id: Date.now(),
+                        type: type,
+                        name: file.name,
+                        data: e.target.result
+                    };
+                    
+                    uploadedFiles.push(fileData);
+                    addUploadPreview(fileData);
+                };
+                
+                if (type === 'image' || type === 'video') {
+                    reader.readAsDataURL(file);
+                } else {
+                    reader.readAsText(file);
+                }
+            }
+        }
+        
+        // 添加上传预览
+        function addUploadPreview(fileData) {
+            const previewContainer = document.getElementById('uploadPreview');
+            
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.dataset.id = fileData.id;
+            
+            if (fileData.type === 'image') {
+                previewItem.innerHTML = `
+                    <img src="${fileData.data}" alt="${fileData.name}">
+                    <button class="preview-remove" onclick="removeUpload(${fileData.id})">&times;</button>
+                `;
+            } else if (fileData.type === 'video') {
+                previewItem.innerHTML = `
+                    <video controls>
+                        <source src="${fileData.data}" type="video/mp4">
+                        您的浏览器不支持视频预览
+                    </video>
+                    <button class="preview-remove" onclick="removeUpload(${fileData.id})">&times;</button>
+                `;
+            } else {
+                previewItem.innerHTML = `
+                    <div class="file-icon">
+                        <i class="fas fa-file"></i>
+                    </div>
+                    <button class="preview-remove" onclick="removeUpload(${fileData.id})">&times;</button>
+                `;
+            }
+            
+            previewContainer.appendChild(previewItem);
+        }
+        
+        // 移除上传文件
+        function removeUpload(fileId) {
+            uploadedFiles = uploadedFiles.filter(file => file.id !== fileId);
+            
+            const previewItem = document.querySelector(`.preview-item[data-id="${fileId}"]`);
+            if (previewItem) {
+                previewItem.remove();
+            }
+        }
+        
+        // 发布动态
+        function publishPost() {
+            if (isGuestMode) {
+                alert('请先登录以发布动态');
+                showLoginModal();
+                return;
+            }
+            
+            const postContent = document.getElementById('postContent');
+            const content = postContent.value.trim();
+            
+            if (!content && uploadedFiles.length === 0) {
+                alert('动态内容不能为空');
+                return;
+            }
+            
+            // 创建新动态
+            const post = {
+                id: Date.now(),
+                author: currentUser.username,
+                avatar: document.getElementById('userAvatar').src,
+                content: content,
+                attachments: [...uploadedFiles],
+                location: currentLocation,
+                time: new Date().toLocaleString(),
+                likes: 0,
+                comments: []
+            };
+            
+            // 保存动态到localStorage
+            savePost(post);
+            
+            // 清空输入框和上传文件
+            postContent.value = '';
+            uploadedFiles = [];
+            document.getElementById('uploadPreview').innerHTML = '';
+            
+            alert('动态已发布');
+            
+            // 切换到动态页面
+            switchPage('trending');
+        }
+        
+        function savePost(post) {
+            // 从localStorage获取现有动态或初始化空数组
+            const posts = JSON.parse(localStorage.getItem('userPosts') || '[]');
+            
+            // 添加新动态
+            posts.unshift(post);
+            
+            // 保存回localStorage
+            localStorage.setItem('userPosts', JSON.stringify(posts));
+        }
+        
+        // 视频控制函数
+        function playVideo() {
+            const iframe = document.getElementById('videoPlayer');
+            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
+        
+        function pauseVideo() {
+            const iframe = document.getElementById('videoPlayer');
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+        
+        function muteVideo() {
+            const iframe = document.getElementById('videoPlayer');
+            iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+        }
+        
+        function fullscreenVideo() {
+            const iframe = document.getElementById('videoPlayer');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            }
+        }
+        
+        // 切换到其他视频
+        function switchToVideo(videoId) {
+            // 更新视频标题和描述（模拟）
+            const titles = [
+                "人工智能与未来科技",
+                "AI技术的最新突破",
+                "机器学习入门指南",
+                "深度学习的未来"
+            ];
+            
+            const descriptions = [
+                "探索人工智能如何改变我们的世界，以及未来科技的发展趋势。",
+                "了解最新AI技术突破，包括自然语言处理和计算机视觉的进展。",
+                "适合初学者的机器学习教程，从基础概念到实际应用。",
+                "探讨深度学习技术的发展趋势和未来可能的应用场景。"
+            ];
+            
+            const videoUrls = {
+                bilibili: [
+                    "https://player.bilibili.com/player.html?bvid=BV1GJ411x7h7",
+                    "https://player.bilibili.com/player.html?bvid=BV1xJ41137nV",
+                    "https://player.bilibili.com/player.html?bvid=BV1HJ411L7DP",
+                    "https://player.bilibili.com/player.html?bvid=BV1CJ411S7gw"
+                ],
+                youtube: [
+                    "https://www.youtube.com/embed/ad79nYk2keg",
+                    "https://www.youtube.com/embed/aircAruvnKk",
+                    "https://www.youtube.com/embed/IJDJ0kBx2LM",
+                    "https://www.youtube.com/embed/CS4cs9xVecg"
+                ],
+                youku: [
+                    "https://player.youku.com/embed/XNDg3NDQ0MjYwNA==",
+                    "https://player.youku.com/embed/XNDg3NDQ0MjYwNA==",
+                    "https://player.youku.com/embed/XNDg3NDQ0MjYwNA==",
+                    "https://player.youku.com/embed/XNDg3NDQ0MjYwNA=="
+                ],
+                iqiyi: [
+                    "https://www.iqiyi.com/player/20230820/8c9b7c7c7c7c7c7c.html",
+                    "https://www.iqiyi.com/player/20230820/8c9b7c7c7c7c7c7c.html",
+                    "https://www.iqiyi.com/player/20230820/8c9b7c7c7c7c7c7c.html",
+                    "https://www.iqiyi.com/player/20230820/8c9b7c7c7c7c7c7c.html"
+                ]
+            };
+            
+            document.querySelector('.video-title').textContent = titles[videoId];
+            document.querySelector('.video-description').textContent = descriptions[videoId];
+            document.getElementById('videoPlayer').src = videoUrls[currentVideoPlatform][videoId];
+            
+            // 滚动到顶部
+            window.scrollTo(0, 0);
+        }
+        
+        // 切换视频平台
+        function switchVideoPlatform(platform) {
+            currentVideoPlatform = platform;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.video-platform-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 更新当前视频
+            const currentVideoIndex = 0; // 假设当前是第一个视频
+            const videoUrls = {
+                bilibili: "https://player.bilibili.com/player.html?bvid=BV1GJ411x7h7",
+                youtube: "https://www.youtube.com/embed/ad79nYk2keg",
+                youku: "https://player.youku.com/embed/XNDg3NDQ0MjYwNA==",
+                iqiyi: "https://www.iqiyi.com/player/20230820/8c9b7c7c7c7c7c7c.html"
+            };
+            
+            document.getElementById('videoPlayer').src = videoUrls[platform];
+        }
+        
+        // 打开文档
+        function openDocument(docId) {
+            alert(`正在打开文档 #${docId}...`);
+            // 实际应用中这里会打开PDF或其他文档
+        }
+        
+        // 设置主题
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // 保存账号设置
+        function saveAccountSettings() {
+            // 保存时间提醒设置
+            const hours = document.getElementById('reminderHours').value;
+            const minutes = document.getElementById('reminderMinutes').value;
+            const seconds = document.getElementById('reminderSeconds').value;
+            
+            const reminder = {
+                hours: hours,
+                minutes: minutes,
+                seconds: seconds
+            };
+            
+            localStorage.setItem('timeReminder', JSON.stringify(reminder));
+            
+            alert('账号设置已保存');
+            closeModal('accountSettingsModal');
+        }
+        
+        // 测试时间提醒
+        function testReminder() {
+            const hours = parseInt(document.getElementById('reminderHours').value) || 0;
+            const minutes = parseInt(document.getElementById('reminderMinutes').value) || 0;
+            const seconds = parseInt(document.getElementById('reminderSeconds').value) || 0;
+            
+            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            
+            if (totalSeconds <= 0) {
+                alert('请设置有效的时间间隔');
+                return;
+            }
+            
+            alert(`已设置 ${hours}小时 ${minutes}分钟 ${seconds}秒 后提醒`);
+            
+            // 实际应用中这里会设置定时器
+            setTimeout(() => {
+                alert('时间提醒：设定的时间已到！');
+            }, totalSeconds * 1000);
+        }
+        
+        // 打开收藏内容
+        function openFavorite(favId) {
+            alert(`正在打开收藏 #${favId}...`);
+            // 实际应用中这里会打开收藏的内容
+            closeModal('favoritesModal');
+        }
+        
+        // 提交联系表单
+        function submitContact() {
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            if (!name || !email || !message) {
+                alert('请填写所有字段');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                alert('请输入有效的电子邮箱');
+                return;
+            }
+            
+            alert('感谢您的反馈，我们会尽快回复您！');
+            closeModal('contactModal');
+        }
+        
+        // 搜索功能
+        function performSearch() {
+            const query = document.getElementById('searchInput').value;
+            const type = document.getElementById('searchType').value;
+            
+            if (!query.trim()) {
+                alert('请输入搜索关键词');
+                return;
+            }
+            
+            if (type === 'local') {
+                alert(`正在站内搜索: ${query}`);
+                // 实际应用中这里会执行站内搜索
+            } else {
+                const externalUrl = prompt('请输入要跳转的搜索网址（例如 https://www.google.com/search?q=）');
+                if (externalUrl) {
+                    window.open(`${externalUrl}${encodeURIComponent(query)}`, '_blank');
+                }
+            }
+        }
+        
+        // 新闻搜索功能
+        function searchNews() {
+            const source = document.getElementById('newsSource').value;
+            const date = document.getElementById('newsDate').value;
+            
+            if (!date) {
+                alert('请选择日期');
+                return;
+            }
+            
+            // 模拟搜索结果
+            const newsResults = document.getElementById('newsResults');
+            newsResults.innerHTML = `
+                <div class="news-result-item">
+                    <h3 class="news-result-title">${getSourceName(source)} ${date} 头条新闻</h3>
+                    <div class="news-result-meta">
+                        <span>来源: ${getSourceName(source)}</span>
+                        <span>日期: ${date}</span>
+                        <span>分类: 科技</span>
+                    </div>
+                    <div class="news-result-content">
+                        <p>人工智能技术近日取得重大突破，研究人员开发出新型算法，能够更准确地预测蛋白质结构，这一进展有望加速新药研发进程。</p>
+                        <p>该技术基于深度学习模型，通过分析大量已知蛋白质结构数据，学会了预测氨基酸序列如何折叠成三维结构。这一成果被认为是解决生物学最大挑战之一的重要里程碑。</p>
+                    </div>
+                    <div class="news-result-actions">
+                        <button class="btn btn-sm" onclick="window.open('https://news.example.com/123', '_blank')">查看详情</button>
+                    </div>
+                </div>
+                
+                <div class="news-result-item">
+                    <h3 class="news-result-title">${getSourceName(source)} ${date} 财经新闻</h3>
+                    <div class="news-result-meta">
+                        <span>来源: ${getSourceName(source)}</span>
+                        <span>日期: ${date}</span>
+                        <span>分类: 财经</span>
+                    </div>
+                    <div class="news-result-content">
+                        <p>全球股市昨日普遍上涨，科技股领涨。分析师指出，投资者对经济复苏前景持乐观态度，加上企业季度财报表现强劲，共同推动了市场上涨。</p>
+                        <p>主要科技公司股价均有所上涨，其中AI相关企业涨幅最为显著。市场预期人工智能技术将在未来几年内带来巨大商业价值。</p>
+                    </div>
+                    <div class="news-result-actions">
+                        <button class="btn btn-sm" onclick="window.open('https://news.example.com/124', '_blank')">查看详情</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // 获取新闻源名称
+        function getSourceName(source) {
+            const sources = {
+                'sina': '新浪新闻',
+                'people': '人民网',
+                'xinhua': '新华网',
+                'tencent': '腾讯新闻',
+                'netease': '网易新闻'
+            };
+            
+            return sources[source] || '未知来源';
+        }
+        
+        // 用户菜单显示/隐藏
+        document.querySelector('.user-menu').addEventListener('click', function(e) {
+            if (!e.target.matches('.dropdown, .dropdown *')) {
+                this.querySelector('.dropdown').classList.toggle('active');
+            }
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                closeAllModals();
+            }
+        });
+    </script>
+</body>
+</html>
